@@ -81,3 +81,5 @@ jobs:
           git add *||true
           git commit -am "Add generated PDFs and report from GitHub Action"
           git push origin main
+      - name: Generate README.md
+        uses: ./github/workflows/readme-gen.yml
