@@ -1,7 +1,16 @@
 name: PDF Generator
 
+# on:
+#   workflow_dispatch:  # Allows manual triggering of the workflow
+
 on:
-  workflow_dispatch:  # Allows manual triggering of the workflow
+  workflow_call:
+    inputs:
+      config:
+        description: 'url list file'
+        required: false
+        default: "source.txt"
+        type: string
   
 permissions:
   contents: write
@@ -31,11 +40,11 @@ jobs:
       # Step 3: Ensure that the input file exists
       - name: Ensure input file exists
         run: |
-          if [ ! -f "./source.txt" ]; then
+          if [ ! -f "./${{ inputs.config }}" ]; then
             echo "Input file not found! Exiting."
             exit 1
           fi
-          sed -i '/^$/d' "./source.txt"
+          sed -i '/^$/d' "./${{ inputs.config }}"
 
       # Step 4: Execute wkhtmltopdf commands with delay and error reporting
       - name: Execute wkhtmltopdf commands with delay and error handling
@@ -56,36 +65,18 @@ jobs:
               echo $line >> ./reprocess ;
               continue;
             fi 
-          done < ./source.txt
+          done < ./${{ inputs.config }}
           grep -i error ./report >> run_report.txt || true
-          mv *.pdf q/ || true
-          
-      # - name: Set output variables
-      #   id: vars
-      #   run: echo "fcount=$(wc -l source.txt)" >> $GITHUB_OUTPUT
-      
-      # - name: Generate Readme
-      #   run: python readmeGen.py ${{steps.vars.outputs.fcount}}
-
-      # Step 5: Configure git for committing changes
-      - name: Set up Git
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Upload artifact
-        if: always()
-        uses: actions/upload-artifact@v4.3.0
-        with:
-          name: upload-pdf
-          path: ${{ github.workspace }}/q/*.pdf
 
       # Step 6: Commit and push the report and any generated files
       - name: Commit and push changes
         if: always()
         run: |
           rm -f wkhtml* report ./tmpr || true
+          mv *.pdf q/ || true
           ls -ltr
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git status
           git add *||true
           git commit -am "Add generated PDFs and report from GitHub Action"
