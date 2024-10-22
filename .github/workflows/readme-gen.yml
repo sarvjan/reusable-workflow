@@ -1,7 +1,13 @@
 name: README Generator
 
 on:
-  workflow_call
+  workflow_call:
+    inputs:
+      config:
+        description: 'Messege'
+        required: false
+        default: "Messege"
+        type: string
   
 permissions:
   contents: write
