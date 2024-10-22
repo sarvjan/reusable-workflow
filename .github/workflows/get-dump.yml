@@ -35,6 +35,7 @@ jobs:
             echo "Input file not found! Exiting."
             exit 1
           fi
+          sed -i '/^$/d' "./source.txt"
 
       # Step 4: Execute wkhtmltopdf commands with delay and error reporting
       - name: Execute wkhtmltopdf commands with delay and error handling
@@ -44,25 +45,28 @@ jobs:
             # Enhanced wkhtmltopdf command with error handling
             if (wget -q -O - $line | grep -oE "question\s[0-9]+" > ./tmpr || echo $?); then 
               fname=$(cat ./tmpr|head -n 1  | tr  ' ' '-').pdf ; 
+              echo "file name : $fname ------>"
               rm ./tmpr ;
-              if ! bash -c "(echo _______ For line $((++i)) _____; wkhtmltopdf --no-stop-slow-scripts --javascript-delay 1000 $line $fname.pdf 2>&1 | tee -a ./report)"; then
-                echo "Error occurred: Rerun Line : $((++i)) >> ./report
+              cp /dev/null ./report
+              if ! bash -c "(echo _______ For line $((++i)) _____; echo 'CMD : wkhtmltopdf --no-stop-slow-scripts --javascript-delay 1000 $line $fname.pdf' ; wkhtmltopdf --no-stop-slow-scripts --javascript-delay 1000 $line $fname 2>&1 | tee -a ./report)"; then
+                echo "Error occurred: Rerun Line : $((++i))" >> ./report
               fi
+              ls -ltr
               sleep $(shuf -i 3-8 -n 1)
             else 
               echo $line >> ./reprocess ;
               continue;
             fi 
           done < ./source.txt
-          mv *.pdf q/
-          grep -i error ./report >> $GITHUB_STEP_SUMMARY
+          mv *.pdf q/ || true
+          grep -i error ./report >> run_report.txt || true
           
       - name: Set output variables
         id: vars
         run: echo "fcount=$(wc -l source.txt)" >> $GITHUB_OUTPUT
       
       - name: Generate Readme
-        run: python readmeGen.py ${{steps.vars.output.fcount}}
+        run: python readmeGen.py ${{steps.vars.outputs.fcount}}
 
       # Step 5: Configure git for committing changes
       - name: Set up Git
@@ -72,11 +76,11 @@ jobs:
 
       # Step 6: Commit and push the report and any generated files
       - name: Commit and push changes
+        if: always()
         run: |
-          git add report reprocess *.pdf
-          if git diff-index --quiet HEAD; then
-            echo "No changes to commit."
-          else
-            git commit -m "Add generated PDFs and report from GitHub Action"
-            git push origin main
-          fi
+          rm -f wkhtml* report|| true
+          ls -ltr
+          git status
+          git add *||true
+          git commit -am "Add generated PDFs and report from GitHub Action"
+          git push origin main
