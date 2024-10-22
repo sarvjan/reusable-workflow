@@ -16,6 +16,9 @@ permissions:
   contents: write
   
 jobs:
+  readme-generator:
+    uses: sarvjan/template/.github/workflows/readme-gen.yml@main
+
   generate_pdfs:
     runs-on: ubuntu-latest
 
@@ -81,6 +84,3 @@ jobs:
           git add *||true
           git commit -am "Add generated PDFs and report from GitHub Action"
           git push origin main
-
-      - name: Call readme generator workflow
-        uses: sarvjan/template/.github/workflows/readme-gen.yml@main 
