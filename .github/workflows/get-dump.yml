@@ -60,12 +60,12 @@ jobs:
           mv *.pdf q/ || true
           grep -i error ./report >> run_report.txt || true
           
-      - name: Set output variables
-        id: vars
-        run: echo "fcount=$(wc -l source.txt)" >> $GITHUB_OUTPUT
+      # - name: Set output variables
+      #   id: vars
+      #   run: echo "fcount=$(wc -l source.txt)" >> $GITHUB_OUTPUT
       
-      - name: Generate Readme
-        run: python readmeGen.py ${{steps.vars.outputs.fcount}}
+      # - name: Generate Readme
+      #   run: python readmeGen.py ${{steps.vars.outputs.fcount}}
 
       # Step 5: Configure git for committing changes
       - name: Set up Git
