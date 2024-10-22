@@ -1,10 +1,7 @@
 name: README Generator
 
 on:
-  workflow_run:
-    workflows: [PDF Generator]
-    types:
-      - completed
+  workflow_call
   
 permissions:
   contents: write
