@@ -1,7 +1,10 @@
 name: README Generator
 
 on:
-  workflow_dispatch:  # Allows manual triggering of the workflow
+  workflow_run:
+    workflows: [PDF Generator]
+    types:
+      - completed
   
 permissions:
   contents: write
