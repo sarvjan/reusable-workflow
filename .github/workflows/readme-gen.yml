@@ -28,7 +28,7 @@ jobs:
 
       - name: Set output variables
         id: vars
-        run: echo "fcount=$(ls q/*.pdf | sort -n -t- -k2 | tail -n 1 | grep -oE "[0-9]*")" >> $GITHUB_OUTPUT
+        run: pwd ; echo "fcount=$(ls q/*.pdf | sort -n -t- -k2 | tail -n 1 | grep -oE "[0-9]*")" >> $GITHUB_OUTPUT
       
       - name: Generate Readme
         run: python readmeGen.py ${{steps.vars.outputs.fcount}}
