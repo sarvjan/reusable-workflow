@@ -20,6 +20,9 @@ jobs:
       # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          repository: sarvjan/template
+          path: reusable-wf
 
       - name: Setup python
         uses: actions/setup-python@v4
@@ -28,10 +31,10 @@ jobs:
 
       - name: Set output variables
         id: vars
-        run: pwd ; echo "fcount=$(ls q/*.pdf | sort -n -t- -k2 | tail -n 1 | grep -oE "[0-9]*")" >> $GITHUB_OUTPUT
+        run: echo "fcount=$(ls q/*.pdf | sort -n -t- -k2 | tail -n 1 | grep -oE "[0-9]*")" >> $GITHUB_OUTPUT
       
       - name: Generate Readme
-        run: python readmeGen.py ${{steps.vars.outputs.fcount}}
+        run: python ${GITHUB_WORKSPACE}/reusable-wf/readmeGen.py ${{steps.vars.outputs.fcount}}
 
       - name: Set up Git
         run: |
