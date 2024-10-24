@@ -46,7 +46,7 @@ jobs:
 
       - name: Generate readmeGen.py
         run: |
-        cat << EOF > readmeGen.py
+        cat << 'EOF' > readmeGen.py
         import sys
         import math
         
