@@ -21,11 +21,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Install patched wkhtmltopdf version
       - name: Install patched wkhtmltopdf
         run: |
           sudo apt-get update -qq
@@ -38,7 +36,6 @@ jobs:
         with:
           python-version: '3.10'
 
-      # Step 3: Ensure that the input file exists
       - name: Ensure input file exists
         run: |
           if [ ! -f "./${{ inputs.config }}" ]; then
@@ -47,7 +44,56 @@ jobs:
           fi
           sed -i '/^$/d' "./${{ inputs.config }}"
 
-      # Step 4: Execute wkhtmltopdf commands with delay and error reporting
+      - name: Generate readmeGen.py
+        run: |
+        cat << EOF > readmeGen.py
+        import sys
+        import math
+        
+        def generate_readme(max_number):
+            # Determine the number of columns based on max_number, with each column accommodating up to 10 questions
+            columns = math.ceil(max_number / 10)  # Each column can hold up to 10 questions
+        
+            # Calculate the number of rows needed based on max_number and the column limit
+            rows = min(10, max_number)  # Limit to a maximum of 10 rows for display purposes
+        
+            readme_content = "## Questions\n"
+            readme_content += "|" + " | ".join([""] * columns) + "|\n"  # Empty row for columns
+            readme_content += "|" + " | ".join(["-"] * columns) + "|\n"  # Separator row
+        
+            # Prepare a matrix with a fixed number of rows and a dynamic number of columns
+            matrix = [["" for _ in range(columns)] for _ in range(rows)]
+            
+            # Fill the matrix by columns first
+            for i in range(max_number):
+                col = i // rows  # Determine which column to place the question
+                row = i % rows   # Determine the position in the column
+                matrix[row][col] = f"[question-{i + 1}](./q/question-{i + 1}.pdf)"
+            
+            # Add each row to the markdown content
+            for row in matrix:
+                readme_content += "|" + " | ".join(row) + "|\n"
+        
+            # Save the README.md file
+            with open("README.md", "w") as file:
+                file.write(readme_content)
+        
+        # Example usage:
+        if __name__ == "__main__":
+            if len(sys.argv) < 2:
+                print("Usage: python readmeGen.py <max_number>")
+                sys.exit(1)
+        
+            try:
+                max_number = int(sys.argv[1])
+                if max_number < 1:
+                    raise ValueError("Input must be a positive integer.")
+                generate_readme(max_number)
+            except ValueError as e:
+                print(f"Error: {e}")
+                sys.exit(1)
+        EOF
+
       - name: Execute wkhtmltopdf commands with delay and error handling
         run: |
           i=0
@@ -69,7 +115,15 @@ jobs:
           done < ./${{ inputs.config }}
           grep -i error ./report >> run_report.txt || true
 
-      # Step 6: Commit and push the report and any generated files
+      - name: Set output variables
+        id: vars
+        run: |
+          find /home/runner/work/
+          echo "fcount=$(ls ${GITHUB_WORKSPACE}/q/*.pdf | sort -n -t- -k2 | tail -n 1 | grep -oE "[0-9]*")" >> $GITHUB_OUTPUT
+      
+      - name: Generate Readme
+        run: python ${GITHUB_WORKSPACE}/reusable-wf/readmeGen.py ${{steps.vars.outputs.fcount}}
+
       - name: Commit and push changes
         id: upload
         if: always()
@@ -84,6 +138,3 @@ jobs:
           git commit -am "Add generated PDFs and report from GitHub Action"
           git push origin main
 
-  readme-generator:
-    needs: [ generate_pdfs ]
-    uses: sarvjan/template/.github/workflows/readme-gen.yml@main
