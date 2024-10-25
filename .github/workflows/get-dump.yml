@@ -119,6 +119,8 @@ jobs:
         id: vars
         run: |
           mv *.pdf q/ || true
+          ls ${GITHUB_WORKSPACE}/q/*.pdf | sort -n -t- -k2 
+          ls ${GITHUB_WORKSPACE}/q/*.pdf | sort -n -t- -k2 | tail -n 1
           echo "fcount=$(ls ${GITHUB_WORKSPACE}/q/*.pdf | sort -n -t- -k2 | tail -n 1 | grep -oE "[0-9]*")" >> $GITHUB_OUTPUT
       
       - name: Generate Readme
