@@ -118,7 +118,7 @@ jobs:
       - name: Set output variables
         id: vars
         run: |
-          find /home/runner/work/
+          mv *.pdf q/ || true
           echo "fcount=$(ls ${GITHUB_WORKSPACE}/q/*.pdf | sort -n -t- -k2 | tail -n 1 | grep -oE "[0-9]*")" >> $GITHUB_OUTPUT
       
       - name: Generate Readme
@@ -129,7 +129,6 @@ jobs:
         if: always()
         run: |
           rm -f wkhtml* report ./tmpr readmeGen.py || true
-          mv *.pdf q/ || true
           ls -ltr
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
