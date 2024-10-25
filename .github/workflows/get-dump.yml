@@ -121,10 +121,10 @@ jobs:
         id: vars
         run: |
           mv *.pdf q/ || true
-          echo "fcount=$(ls ${GITHUB_WORKSPACE}/q/*.pdf | awk -F '/' '{print $NF}' | sort -n -t- -k2 | tail -n 1 | grep -oE "[0-9]*")" >> $GITHUB_OUTPUT
+          echo "fcount=$(ls ${GITHUB_WORKSPACE}/q/*.pdf | awk -F '/' '{print $NF}' | sort -n -t- -k2 | tail -n 1 | grep -oE "[0-9]*")" >> $GITHUB_ENV
       
       - name: Generate Readme
-        run: python ${GITHUB_WORKSPACE}/readmeGen.py ${${{steps.vars.outputs.fcount}}:=1}
+        run: python ${GITHUB_WORKSPACE}/readmeGen.py ${fcount:=1}
 
       - name: Commit and push changes
         id: upload
