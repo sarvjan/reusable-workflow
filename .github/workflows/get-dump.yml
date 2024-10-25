@@ -129,7 +129,6 @@ jobs:
         if: always()
         run: |
           rm -f wkhtml* report ./tmpr readmeGen.py || true
-          ls -ltr
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git status
