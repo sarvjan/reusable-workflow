@@ -96,6 +96,9 @@ jobs:
 
       - name: Execute wkhtmltopdf commands with delay and error handling
         run: |
+          wc -l ./${{ inputs.config }}
+          pwd
+          ls -ltr *
           if ! [ "$(wc -l ./${{ inputs.config }})" == "0" ];then
             i=0
             while read line; do
