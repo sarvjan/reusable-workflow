@@ -128,7 +128,7 @@ jobs:
         id: upload
         if: always()
         run: |
-          rm -f wkhtml* report ./tmpr || true
+          rm -f wkhtml* report ./tmpr readmeGen.py || true
           mv *.pdf q/ || true
           ls -ltr
           git config --global user.name "github-actions[bot]"
