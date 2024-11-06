@@ -104,15 +104,14 @@ jobs:
             echo "line104"
             i=0
             while read line; do
-              
+              echo "line107"              
               # Enhanced wkhtmltopdf command with error handling
               wget -q -O - $line | grep -oE "question\s[0-9]+" > ./tmpr
-              
+
               if [ $? == 0 ] && [ "$(cat ./tmpr|head -n 1  | tr  ' ' '-')" != "" ];then
                 
                 fname=$(cat ./tmpr|head -n 1  | tr  ' ' '-').pdf ; 
                 echo "file name : $fname ------>"
-                
                 if ! [ -e "./q/$fname" ];then
                   echo _______ For line $((++i)) _____;
                   echo "CMD : wkhtmltopdf --no-stop-slow-scripts --javascript-delay 1000 $line $fname" ; 
