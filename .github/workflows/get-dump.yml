@@ -96,6 +96,7 @@ jobs:
 
       - name: Execute wkhtmltopdf commands with delay and error handling
         run: |
+          echo "Starting in working dir: $(pwd)..."
           cp /dev/null success_download.txt
           cp /dev/null ./report
           if ! [ "$(wc -l ./${{ inputs.config }})" == "0" ];then
