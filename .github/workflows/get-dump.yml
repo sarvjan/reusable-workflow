@@ -97,10 +97,11 @@ jobs:
       - name: Execute wkhtmltopdf commands with delay and error handling
         run: |
           echo "Starting in working dir: $(pwd)..."
-          find . 
           cp /dev/null success_download.txt
           cp /dev/null ./report
+          echo "line102"
           if ! [ "$(wc -l ./${{ inputs.config }})" == "0" ];then
+            echo "line104"
             i=0
             while read line; do
               
@@ -135,6 +136,7 @@ jobs:
             done < ./${{ inputs.config }}
             grep -i error ./report >> run_report.txt || true
           fi
+          echo "line139"
 
       - name: Set output variables
         id: vars
