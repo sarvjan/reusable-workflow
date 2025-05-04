@@ -96,6 +96,9 @@ jobs:
                   print(f"Error: {e}")
                   sys.exit(1)
           EOF
+          which wkhtmltopdf || true
+          ls -ltr
+          cat ./${{ inputs.config }}
 
       - name: Execute wkhtmltopdf commands with delay and error handling
         run: |
