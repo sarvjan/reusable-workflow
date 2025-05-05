@@ -103,7 +103,7 @@ jobs:
             i=0
             while read line; do
               which wget
-              wget -v -q -O - $line | grep -oE "question\s[0-9]+" > ./tmpr || echo "Error"
+              wget -v -O - $line | grep -oE "question\s[0-9]+" > ./tmpr || echo "Error"
 
               if [ $? == 0 ] && [ "$(cat ./tmpr|head -n 1  | tr  ' ' '-')" != "" ];then
                 fname=$(cat ./tmpr|head -n 1  | tr  ' ' '-').pdf ;
