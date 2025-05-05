@@ -91,7 +91,8 @@ jobs:
           EOF
           which wkhtmltopdf || true
           ls -ltr
-          cat ./${{ inputs.config }}
+          # cat ./${{ inputs.config }}
+          
 
       - name: Execute wkhtmltopdf commands with delay and error handling
         run: |
@@ -136,7 +137,9 @@ jobs:
           #   grep -i error ./report >> run_report.txt || true
           # fi
           # echo "line142"
-          which wkhtmltopdf
+          wkhtmltopdf --no-stop-slow-scripts --javascript-delay 1000 https://www.examtopics.com/discussions/google/view/79414-exam-professional-data-engineer-topic-1-question-1 professional-data-engineer-topic-1-question-1.pdf
+          du -sk *.pdf
+          ls -ltr
           which python
 
       # - name: Set output variables
