@@ -45,7 +45,7 @@ jobs:
             echo "Input file not found! Exiting."
             exit 1
           fi
-          sed '/^$/d' "./${{ inputs.config }}" > "./${{ inputs.config }}"
+          sed -i '/^$/d' "./${{ inputs.config }}"
 
       - name: Generate readmeGen.py
         run: |
