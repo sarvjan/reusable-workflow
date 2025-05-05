@@ -98,7 +98,7 @@ jobs:
         run: |
           echo "Starting in working dir: $(pwd)..."
           cp /dev/null success_download.txt > ./report
-
+          ls -ltr
           if [ -s "./${{ inputs.config }}" ]; then
             i=0
             while read line; do
@@ -130,6 +130,9 @@ jobs:
               fi
             done < ./${{ inputs.config }}
             grep -i error ./report >> run_report.txt || true
+          else
+            echo "Input file not found! Exiting."
+            exit 1
           fi
 
       - name: Set output variables
