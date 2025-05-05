@@ -27,7 +27,7 @@ jobs:
       - name: Install patched wkhtmltopdf
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq xfonts-75dpi
+          sudo apt-get install -y -qq xfonts-75dpi dos2unix
           wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
           wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb
           sudo apt install -y ./libssl1.1_1.1.0g-2ubuntu4_amd64.deb
@@ -46,6 +46,7 @@ jobs:
             exit 1
           fi
           sed -i '/^$/d' "./${{ inputs.config }}"
+          dos2unix "./${{ inputs.config }}"
 
       - name: Generate readmeGen.py
         run: |
@@ -104,7 +105,6 @@ jobs:
             while read line; do
               which wget
               wget -v -O - $line | grep -oE "question\s[0-9]+" > ./tmpr || echo "Error"
-
               if [ $? == 0 ] && [ "$(cat ./tmpr|head -n 1  | tr  ' ' '-')" != "" ];then
                 fname=$(cat ./tmpr|head -n 1  | tr  ' ' '-').pdf ;
                 echo "file name : $fname ------>"
