@@ -91,10 +91,10 @@ jobs:
               print(f"Error: {e}")
               sys.exit(1)
           EOF
-          echo "############## Debug Statements Start ##############"
-          cat ./${{ inputs.config }}
-          cat readmeGen.py
-          echo "############### Debug Statements End ###############"
+          # echo "############## Debug Statements Start ##############"
+          # cat ./${{ inputs.config }}
+          # cat readmeGen.py
+          # echo "############### Debug Statements End ###############"
 
       - name: Execute wkhtmltopdf commands with delay and error handling
         run: |
