@@ -114,7 +114,7 @@ jobs:
                   echo "CMD : wkhtmltopdf --no-stop-slow-scripts --javascript-delay 1000 $line $fname" ;
                   wkhtmltopdf --no-stop-slow-scripts --javascript-delay 1000 $line $fname 2>/dev/null || true
 
-                  if [ -f "./$fname" ] && [ $(wc -c ./$fname) -gt 70000 ] ;then
+                  if [ -f "./$fname" ] && [ $(wc -c < ./$fname) -gt 70000 ] ;then
                     echo "Adding Entry to success_download.txt as file exist in current dir..."
                     echo $line | grep -oE 'view/[0-9]+' | tr -d 'view/' >> success_download.txt
                   else
