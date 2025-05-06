@@ -99,7 +99,7 @@ jobs:
       - name: Execute wkhtmltopdf commands with delay and error handling
         run: |
           echo "Starting in working dir: $(pwd)..."
-          cp /dev/null success_download.txt > ./report
+          cp /dev/null success_download.txt
           ls -ltr
           if [ -s "./${{ inputs.config }}" ]; then
             i=0
@@ -112,7 +112,7 @@ jobs:
                 if ! [ -e "./q/$fname" ];then
                   echo _______ For line $((++i)) _____;
                   echo "CMD : wkhtmltopdf --no-stop-slow-scripts --javascript-delay 1000 $line $fname" ;
-                  wkhtmltopdf --no-stop-slow-scripts --javascript-delay 1000 $line $fname 2>./report || true
+                  wkhtmltopdf --no-stop-slow-scripts --javascript-delay 1000 $line $fname 2>/dev/null || true
 
                   if [ -f "./$fname" ] && [ $(wc -c ./$fname) -gt 70000 ] ;then
                     echo "Adding Entry to success_download.txt as file exist in current dir..."
@@ -133,7 +133,6 @@ jobs:
                 continue;
               fi
             done < ./${{ inputs.config }}
-            grep -i error ./report >> run_report.txt || true
           else
             echo "Input file not found! Exiting."
             exit 1
