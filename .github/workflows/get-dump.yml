@@ -120,7 +120,6 @@ jobs:
                   else
                     echo "File size less than expected"
                     rm -f "./$fname"
-                    echo $line >> ./reprocess ;
                   fi
                   sleep $(shuf -i 3-8 -n 1)
                 else
@@ -129,7 +128,6 @@ jobs:
                   echo $line | grep -oE 'view/[0-9]+' | tr -d 'view/' >> success_download.txt
                 fi
               else
-                echo $line >> ./reprocess ;
                 continue;
               fi
             done < ./${{ inputs.config }}
